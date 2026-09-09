@@ -1,15 +1,17 @@
 # Vibe Player
 
-**Vibe Player — Developed by Shan Palia**
+Vibe Player is an Android media player project developed by Shan Palia.
 
-Native Android video player built with Kotlin, Jetpack Compose and AndroidX Media3.
+## This build
+- Refreshed compact video-library UI
+- White/light home interface with cleaner cards
+- Automatic landscape mode for landscape videos (resolution-aware; unknown video sizes default to landscape)
+- Android status/navigation bars remain visible in the player
+- MediaSessionService starts when playback begins so playback can continue after Back/Home
+- Android media notification with play/pause controls and a tap-to-return action
+- Notification permission requested on Android 13+
+- Playback metadata is exposed to the system media notification
+- Gradle 9.3.1 / Codemagic signed release setup
 
-## Codemagic signed APK
-
-1. Push this project to GitHub with `codemagic.yaml` at repository root.
-2. In Codemagic, add the GitHub repository as a native Android project.
-3. Upload your Android release keystore under **Code signing identities → Android keystores** and use the reference name `vibe_player_keystore` (or change the YAML reference to your chosen name).
-4. Codemagic injects `CM_KEYSTORE_PATH`, `CM_KEYSTORE_PASSWORD`, `CM_KEY_ALIAS`, and `CM_KEY_PASSWORD` during the build.
-5. Run the **Vibe Player Android Signed APK** workflow.
-
-**Never commit the keystore or passwords to GitHub. Keep the original keystore safe for future updates.**
+## Build
+Use Android Studio or Codemagic. The release workflow uses the `paliaapk-release` signing identity configured in Codemagic.

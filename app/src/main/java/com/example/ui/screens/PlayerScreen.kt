@@ -103,6 +103,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
@@ -114,10 +115,15 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.example.VibeApplication
+import com.example.service.VibePlaybackService
 import com.example.data.model.TrackInfo
 import com.example.data.model.VideoAspectRatio
 import com.example.data.model.VideoItem
@@ -198,6 +204,10 @@ fun PlayerScreen(
         }
     }
 
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { }
+
     // Auto-hide controls timer
     LaunchedEffect(controlsVisible, isPlaying, isLocked) {
         if (controlsVisible && isPlaying && !isLocked && settings.autoHideControlsDelayMs > 0) {
@@ -206,11 +216,66 @@ fun PlayerScreen(
         }
     }
 
-    // Keep screen on while playing
-    DisposableEffect(Unit) {
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    // Player mode: automatically choose orientation from the video resolution and keep Android system bars visible.
+    DisposableEffect(video.uri) {
+        val window = activity?.window
+        val previousOrientation = activity?.requestedOrientation ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        val landscapeVideo = video.resolution
+            .split("x", "×")
+            .mapNotNull { it.trim().toIntOrNull() }
+            .let { if (it.size == 2) it[0] >= it[1] else true }
+
+        if (activity != null) {
+            activity.requestedOrientation = if (landscapeVideo) {
+                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            } else {
+                ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+            }
+        }
+
+        if (window != null) {
+            WindowCompat.setDecorFitsSystemWindows(window, true)
+            window.statusBarColor = Color.Black.toArgb()
+            window.navigationBarColor = Color.Black.toArgb()
+            val insetsController = WindowInsetsControllerCompat(window, window.decorView)
+            insetsController.show(WindowInsetsCompat.Type.systemBars())
+            insetsController.isAppearanceLightStatusBars = false
+            insetsController.isAppearanceLightNavigationBars = false
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+
         onDispose {
-            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            if (activity != null) {
+                activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            }
+            if (window != null) {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                window.statusBarColor = Color.White.toArgb()
+                window.navigationBarColor = Color.White.toArgb()
+                val insetsController = WindowInsetsControllerCompat(window, window.decorView)
+                insetsController.show(WindowInsetsCompat.Type.systemBars())
+                insetsController.isAppearanceLightStatusBars = true
+                insetsController.isAppearanceLightNavigationBars = true
+                WindowCompat.setDecorFitsSystemWindows(window, false)
+            }
+            @Suppress("UNUSED_VARIABLE")
+            val ignored = previousOrientation
+        }
+    }
+
+    // Start the MediaSessionService so playback survives leaving the Activity/home screen.
+    LaunchedEffect(video.uri) {
+        try {
+            val serviceIntent = Intent(context, VibePlaybackService::class.java)
+            ContextCompat.startForegroundService(context, serviceIntent)
+        } catch (_: Exception) {
+            // The MediaSessionService can still be used while the Activity is visible.
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
         }
     }
 

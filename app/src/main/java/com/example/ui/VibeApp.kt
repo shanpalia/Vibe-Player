@@ -1,10 +1,15 @@
 package com.example.ui
 
+import android.app.Activity
+import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -13,6 +18,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.example.VibeApplication
 import com.example.data.model.VideoItem
 import com.example.ui.screens.FolderVideosScreen
@@ -40,6 +48,24 @@ fun VibeApp(
     val scope = rememberCoroutineScope()
 
     var currentScreen by remember { mutableStateOf<VibeScreen>(VibeScreen.Home) }
+
+    // Keep the normal app UI below the status bar and always expose Android navigation controls.
+    // PlayerScreen switches to black system bars/landscape while a video is active.
+    val activity = LocalContext.current as? Activity
+    DisposableEffect(currentScreen is VibeScreen.Player) {
+        val window = activity?.window
+        if (window != null && currentScreen !is VibeScreen.Player) {
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            WindowCompat.setDecorFitsSystemWindows(window, true)
+            window.statusBarColor = Color.WHITE
+            window.navigationBarColor = Color.WHITE
+            val controller = WindowInsetsControllerCompat(window, window.decorView)
+            controller.show(WindowInsetsCompat.Type.systemBars())
+            controller.isAppearanceLightStatusBars = true
+            controller.isAppearanceLightNavigationBars = true
+        }
+        onDispose { }
+    }
 
     // Handle external video launch if opened via file manager or other app
     LaunchedEffect(externalVideoUri) {

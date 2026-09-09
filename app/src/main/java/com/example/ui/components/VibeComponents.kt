@@ -53,7 +53,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -84,94 +83,76 @@ fun VibeLogoHeader(
     onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
+    Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        shape = RoundedCornerShape(22.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp, vertical = 11.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(44.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(
-                        Brush.linearGradient(
-                            listOf(
-                                MaterialTheme.colorScheme.primary,
-                                MaterialTheme.colorScheme.primaryContainer
-                            )
-                        )
-                    )
-                    .padding(2.dp),
+                    .size(54.dp)
+                    .clip(RoundedCornerShape(16.dp)),
                 contentAlignment = Alignment.Center
             ) {
+                // Exact same artwork as the Android launcher icon.
                 AsyncImage(
-                    model = R.drawable.vibe_player_logo,
-                    contentDescription = "Vibe Player Logo",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(10.dp)),
+                    model = R.drawable.vibe_launcher_icon,
+                    contentDescription = "Vibe Player app icon",
+                    modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(16.dp)),
                     contentScale = ContentScale.Crop
                 )
             }
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = "VIBE",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Black,
-                            letterSpacing = 1.2.sp
-                        ),
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black, letterSpacing = 1.1.sp),
                         color = MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = "PLAYER",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 1.sp
-                        ),
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold, letterSpacing = .8.sp),
                         color = VibeTextPrimary
                     )
                 }
-                Text(
-                    text = "Play Everything. Feel the Vibe.",
-                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
-                    color = VibeTextSecondary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(50))
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = .10f))
+                            .padding(horizontal = 7.dp, vertical = 2.dp)
+                    ) {
+                        Text("LOCAL MEDIA", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                    }
+                    Spacer(modifier = Modifier.width(7.dp))
+                    Text(
+                        text = "Play everything. Feel the Vibe.",
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
+                        color = VibeTextSecondary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
-        }
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(
-                onClick = onSearchClick,
-                modifier = Modifier.testTag("search_button")
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search videos",
-                    tint = VibeTextPrimary
-                )
+            IconButton(onClick = onSearchClick, modifier = Modifier.testTag("search_button")) {
+                Icon(Icons.Default.Search, contentDescription = "Search videos", tint = VibeTextPrimary)
             }
-            IconButton(
-                onClick = onSettingsClick,
-                modifier = Modifier.testTag("settings_button")
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Settings",
-                    tint = VibeTextPrimary
-                )
+            IconButton(onClick = onSettingsClick, modifier = Modifier.testTag("settings_button")) {
+                Icon(Icons.Default.Settings, contentDescription = "Settings", tint = VibeTextPrimary)
             }
         }
     }
@@ -202,25 +183,22 @@ fun VideoCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(20.dp))
             .clickable(onClick = onClick)
-            .border(
-                1.dp,
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
-                RoundedCornerShape(16.dp)
-            ),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
+            .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = .25f), RoundedCornerShape(20.dp)),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column {
-            // Thumbnail Area
+        Row(
+            modifier = Modifier.padding(9.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .size(width = 150.dp, height = 94.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(Color(0xFFF1F3F8))
             ) {
                 AsyncImage(
                     model = imageRequest,
@@ -230,249 +208,102 @@ fun VideoCard(
                     error = painterResource(id = R.drawable.vibe_player_logo)
                 )
 
-                // Gradient overlay at bottom of thumbnail
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(60.dp)
-                        .align(Alignment.BottomCenter)
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f))
-                            )
-                        )
-                )
-
-                // Format & Resolution Badges
-                Row(
-                    modifier = Modifier
                         .align(Alignment.TopStart)
-                        .padding(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        .padding(7.dp)
+                        .clip(RoundedCornerShape(7.dp))
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(horizontal = 6.dp, vertical = 3.dp)
                 ) {
-                    if (video.extension.isNotBlank()) {
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.9f))
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                        ) {
-                            Text(
-                                text = video.extension,
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 10.sp
-                                ),
-                                color = Color.White
-                            )
-                        }
-                    }
-                    if (video.resolution.isNotBlank()) {
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(6.dp))
-                                .background(Color.Black.copy(alpha = 0.7f))
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                        ) {
-                            Text(
-                                text = video.resolution,
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontWeight = FontWeight.SemiBold,
-                                    fontSize = 10.sp
-                                ),
-                                color = VibeTextPrimary
-                            )
-                        }
-                    }
+                    Text(video.extension.ifBlank { "VIDEO" }, fontSize = 9.sp, fontWeight = FontWeight.ExtraBold, color = Color.White)
                 }
 
-                // Duration Pill
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
-                        .padding(8.dp)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(Color.Black.copy(alpha = 0.85f))
-                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                        .padding(7.dp)
+                        .clip(RoundedCornerShape(7.dp))
+                        .background(Color.Black.copy(alpha = .82f))
+                        .padding(horizontal = 6.dp, vertical = 3.dp)
                 ) {
-                    Text(
-                        text = video.durationFormatted,
-                        style = MaterialTheme.typography.labelMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 11.sp
-                        ),
-                        color = Color.White
-                    )
+                    Text(video.durationFormatted, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
 
-                // Playback progress bar if partially watched
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = "Play",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(34.dp)
+                        .align(Alignment.Center)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = .92f))
+                        .padding(7.dp)
+                )
+
                 if (video.lastPositionMs > 0 && video.durationMs > 0) {
                     val progress = (video.lastPositionMs.toFloat() / video.durationMs.toFloat()).coerceIn(0f, 1f)
                     LinearProgressIndicator(
                         progress = { progress },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(3.dp)
-                            .align(Alignment.BottomCenter),
+                        modifier = Modifier.fillMaxWidth().height(3.dp).align(Alignment.BottomCenter),
                         color = MaterialTheme.colorScheme.primary,
-                        trackColor = Color.White.copy(alpha = 0.2f)
+                        trackColor = Color.White.copy(alpha = .35f)
                     )
                 }
             }
 
-            // Info row below thumbnail
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = video.title,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.SemiBold,
-                            fontSize = 15.sp
-                        ),
-                        color = VibeTextPrimary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+            Spacer(modifier = Modifier.width(12.dp))
 
-                    Spacer(modifier = Modifier.height(4.dp))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        // Folder badge
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .padding(horizontal = 6.dp, vertical = 2.dp)
-                        ) {
-                            Text(
-                                text = video.bucketName,
-                                style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
-                                color = MaterialTheme.colorScheme.primary,
-                                maxLines = 1
-                            )
-                        }
-
-                        Text(
-                            text = "•",
-                            color = VibeTextTertiary,
-                            fontSize = 11.sp
-                        )
-
-                        Text(
-                            text = video.sizeFormatted,
-                            style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
-                            color = VibeTextSecondary
-                        )
-
-                        if (video.lastPositionMs > 0) {
-                            Text(
-                                text = "•",
-                                color = VibeTextTertiary,
-                                fontSize = 11.sp
-                            )
-                            Text(
-                                text = "Watched ${formatDuration(video.lastPositionMs)}",
-                                style = MaterialTheme.typography.bodySmall.copy(
-                                    fontSize = 11.sp,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            )
-                        }
-                    }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = video.title,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold, fontSize = 15.sp),
+                    color = VibeTextPrimary,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Spacer(modifier = Modifier.height(7.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Outlined.Movie, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(14.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(video.resolution.ifBlank { "Video" }, fontSize = 10.sp, color = VibeTextSecondary, maxLines = 1)
+                    Spacer(modifier = Modifier.width(7.dp))
+                    Text("•", fontSize = 10.sp, color = VibeTextTertiary)
+                    Spacer(modifier = Modifier.width(7.dp))
+                    Text(video.sizeFormatted, fontSize = 10.sp, color = VibeTextSecondary)
                 }
+                Spacer(modifier = Modifier.height(7.dp))
+                Text(
+                    text = video.bucketName,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
 
-                // Favorite button
-                IconButton(
-                    onClick = onToggleFavorite,
-                    modifier = Modifier.size(36.dp)
-                ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                IconButton(onClick = onToggleFavorite, modifier = Modifier.size(38.dp)) {
                     Icon(
                         imageVector = if (video.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                         contentDescription = "Toggle favorite",
                         tint = if (video.isFavorite) VibeRed else VibeTextSecondary,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(21.dp)
                     )
                 }
-
-                // More Menu Button
                 Box {
-                    IconButton(
-                        onClick = { menuExpanded = true },
-                        modifier = Modifier.size(36.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "More options",
-                            tint = VibeTextSecondary,
-                            modifier = Modifier.size(20.dp)
-                        )
+                    IconButton(onClick = { menuExpanded = true }, modifier = Modifier.size(38.dp)) {
+                        Icon(Icons.Default.MoreVert, contentDescription = "More options", tint = VibeTextSecondary)
                     }
-
-                    DropdownMenu(
-                        expanded = menuExpanded,
-                        onDismissRequest = { menuExpanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Play Video") },
-                            leadingIcon = { Icon(Icons.Default.PlayArrow, contentDescription = null) },
-                            onClick = {
-                                menuExpanded = false
-                                onClick()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Play Audio Only") },
-                            leadingIcon = { Icon(Icons.Default.Headphones, contentDescription = null) },
-                            onClick = {
-                                menuExpanded = false
-                                onPlayAudioOnly()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text(if (video.isFavorite) "Remove from Favorites" else "Add to Favorites") },
-                            leadingIcon = {
-                                Icon(
-                                    if (video.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                                    contentDescription = null
-                                )
-                            },
-                            onClick = {
-                                menuExpanded = false
-                                onToggleFavorite()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Share Video") },
-                            leadingIcon = { Icon(Icons.Default.Share, contentDescription = null) },
-                            onClick = {
-                                menuExpanded = false
-                                onShare()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("File Details") },
-                            leadingIcon = { Icon(Icons.Default.Info, contentDescription = null) },
-                            onClick = {
-                                menuExpanded = false
-                                onShowDetails()
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Delete Video", color = VibeRed) },
-                            leadingIcon = { Icon(Icons.Default.Delete, contentDescription = null, tint = VibeRed) },
-                            onClick = {
-                                menuExpanded = false
-                                onDelete()
-                            }
-                        )
+                    DropdownMenu(expanded = menuExpanded, onDismissRequest = { menuExpanded = false }) {
+                        DropdownMenuItem(text = { Text("Play Video") }, leadingIcon = { Icon(Icons.Default.PlayArrow, null) }, onClick = { menuExpanded = false; onClick() })
+                        DropdownMenuItem(text = { Text("Play Audio Only") }, leadingIcon = { Icon(Icons.Default.Headphones, null) }, onClick = { menuExpanded = false; onPlayAudioOnly() })
+                        DropdownMenuItem(text = { Text(if (video.isFavorite) "Remove Favorite" else "Add Favorite") }, leadingIcon = { Icon(if (video.isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder, null) }, onClick = { menuExpanded = false; onToggleFavorite() })
+                        DropdownMenuItem(text = { Text("Share") }, leadingIcon = { Icon(Icons.Default.Share, null) }, onClick = { menuExpanded = false; onShare() })
+                        DropdownMenuItem(text = { Text("File Details") }, leadingIcon = { Icon(Icons.Default.Info, null) }, onClick = { menuExpanded = false; onShowDetails() })
+                        DropdownMenuItem(text = { Text("Delete Video", color = VibeRed) }, leadingIcon = { Icon(Icons.Default.Delete, null, tint = VibeRed) }, onClick = { menuExpanded = false; onDelete() })
                     }
                 }
             }

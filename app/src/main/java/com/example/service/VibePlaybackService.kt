@@ -3,14 +3,15 @@ package com.example.service
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.os.Build
+import android.app.PendingIntent
 import androidx.annotation.OptIn
-import androidx.core.app.NotificationCompat
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
-import com.example.R
 import com.example.VibeApplication
+import com.example.MainActivity
 
 @OptIn(UnstableApi::class)
 class VibePlaybackService : MediaSessionService() {
@@ -28,7 +29,18 @@ class VibePlaybackService : MediaSessionService() {
         val app = application as? VibeApplication
         val player = app?.playerManager?.exoPlayer
         if (player != null) {
-            mediaSession = MediaSession.Builder(this, player).build()
+            val launchIntent = Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+            val sessionActivity = PendingIntent.getActivity(
+                this,
+                2001,
+                launchIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+            mediaSession = MediaSession.Builder(this, player)
+                .setSessionActivity(sessionActivity)
+                .build()
         }
     }
 

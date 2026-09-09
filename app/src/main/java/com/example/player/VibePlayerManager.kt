@@ -7,6 +7,7 @@ import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
 import androidx.media3.common.Format
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.PlaybackParameters
@@ -196,6 +197,14 @@ class VibePlayerManager(
                 .build()
             mediaItemBuilder.setSubtitleConfigurations(listOf(subtitleConfig))
         }
+
+        mediaItemBuilder.setMediaMetadata(
+            MediaMetadata.Builder()
+                .setTitle(video.title)
+                .setArtist("Vibe Player • Shan Palia")
+                .setAlbumTitle("Vibe Player")
+                .build()
+        )
 
         val mediaItem = mediaItemBuilder.build()
         player.setMediaItem(mediaItem)
