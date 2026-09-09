@@ -1,0 +1,26 @@
+workflows:
+  vibe-player-android:
+    name: Vibe Player Android Signed APK
+    max_build_duration: 120
+    instance_type: linux_x2
+    environment:
+      android_signing:
+        - vibe_player_keystore
+      vars:
+        PACKAGE_NAME: "com.aistudio.vibeplayer.kqwzx"
+    scripts:
+      - name: Set Android SDK location
+        script: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
+      - name: Build signed release APK
+        script: |
+          gradle --no-daemon assembleRelease
+    artifacts:
+      - app/build/outputs/apk/release/*.apk
+    publishing:
+      email:
+        recipients:
+          - shanpalia786@gmail.com
+        notify:
+          success: true
+          failure: true
