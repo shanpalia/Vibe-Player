@@ -119,7 +119,7 @@ data class PlaybackSettings(
     val resumeOption: ResumeOption = ResumeOption.ASK,
     val autoPlayNext: Boolean = true,
     val doubleTapSeekSeconds: Int = 10,
-    val backgroundAudioEnabled: Boolean = true,
+    val backgroundAudioEnabled: Boolean = false,
     val hardwareAcceleration: Boolean = true,
     val brightnessGesture: Boolean = true,
     val volumeGesture: Boolean = true,

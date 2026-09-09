@@ -81,18 +81,7 @@ fun VibeApp(
         themeMode = settings.themeMode,
         accentIndex = settings.accentColorIndex
     ) {
-        // Android 15+ can draw edge-to-edge even when requested otherwise.
-        // Keep every normal app screen below the status bar. PlayerScreen manages
-        // its own immersive/landscape layout.
-        val appInsetsModifier = if (currentScreen is VibeScreen.Player) {
-            modifier.fillMaxSize()
-        } else {
-            modifier
-                .fillMaxSize()
-                .androidx.compose.foundation.layout.statusBarsPadding()
-        }
-
-        Surface(modifier = appInsetsModifier) {
+        Surface(modifier = modifier.fillMaxSize()) {
             when (val screen = currentScreen) {
                 is VibeScreen.Home -> {
                     HomeScreen(

@@ -87,7 +87,7 @@ fun VibeLogoHeader(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 6.dp),
+            .padding(horizontal = 14.dp, vertical = 8.dp),
         shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
@@ -102,22 +102,22 @@ fun VibeLogoHeader(
                 painter = painterResource(id = R.drawable.vibe_launcher_icon),
                 contentDescription = "Vibe Player",
                 modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(13.dp)),
+                    .size(54.dp)
+                    .clip(RoundedCornerShape(15.dp)),
                 contentScale = ContentScale.Crop
             )
             Spacer(modifier = Modifier.width(10.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = "Vibe Player",
-                    fontSize = 20.sp,
+                    fontSize = 21.sp,
                     fontWeight = FontWeight.Black,
                     color = VibeTextPrimary,
                     maxLines = 1
                 )
                 Text(
                     text = "Play Everything. Feel the Vibe.",
-                    fontSize = 9.sp,
+                    fontSize = 10.sp,
                     fontWeight = FontWeight.Medium,
                     color = VibeTextSecondary,
                     maxLines = 1

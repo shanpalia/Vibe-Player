@@ -1,13 +1,13 @@
 # Vibe Player
 
-Vibe Player — Android video player with a clean white/purple interface.
+Vibe Player — Android video player by ShanPalia.
 
-- Bottom navigation includes Home, Folders, Recent, Favorites and Settings.
-- App content respects Android system status/navigation bars so controls do not sit underneath phone system UI.
-- Launcher and in-app branding use the Vibe Player icon.
-- Splash screen includes “Developer by ShanPalia”.
-- Release build is configured for Codemagic with the `paliaapk-release` signing reference.
+- MP4, MKV and common Media3 extractor formats
+- MX-style player controls and screen ratio options
+- Automatic landscape for landscape videos
+- Android status/navigation bar safe-area handling
+- Background audio disabled by default; leaving the app stops playback
+- Splash screen: Developer by ShanPalia
+- White/purple clean UI
 
-
-## Phone safe-area fix
-Normal screens use top status-bar insets so the header never overlaps Android system icons. Player remains separately managed for landscape playback.
+Build with Codemagic using the included Gradle 9.3.1 wrapper.
