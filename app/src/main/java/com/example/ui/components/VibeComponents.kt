@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -86,73 +87,49 @@ fun VibeLogoHeader(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 14.dp, vertical = 10.dp),
-        shape = RoundedCornerShape(22.dp),
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 11.dp),
+                .padding(horizontal = 12.dp, vertical = 9.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
+            Image(
+                painter = painterResource(id = R.drawable.vibe_launcher_icon),
+                contentDescription = "Vibe Player",
                 modifier = Modifier
-                    .size(54.dp)
-                    .clip(RoundedCornerShape(16.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                // Exact same artwork as the Android launcher icon.
-                AsyncImage(
-                    model = R.drawable.vibe_launcher_icon,
-                    contentDescription = "Vibe Player app icon",
-                    modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.Crop
+                    .size(52.dp)
+                    .clip(RoundedCornerShape(15.dp)),
+                contentScale = ContentScale.Crop
+            )
+            Spacer(modifier = Modifier.width(10.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Vibe Player",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Black,
+                    color = VibeTextPrimary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = "Play Everything. Feel the Vibe.",
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = VibeTextSecondary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "VIBE",
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Black, letterSpacing = 1.1.sp),
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "PLAYER",
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.ExtraBold, letterSpacing = .8.sp),
-                        color = VibeTextPrimary
-                    )
-                }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(50))
-                            .background(MaterialTheme.colorScheme.primary.copy(alpha = .10f))
-                            .padding(horizontal = 7.dp, vertical = 2.dp)
-                    ) {
-                        Text("LOCAL MEDIA", fontSize = 9.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
-                    }
-                    Spacer(modifier = Modifier.width(7.dp))
-                    Text(
-                        text = "Play everything. Feel the Vibe.",
-                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 11.sp),
-                        color = VibeTextSecondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+            IconButton(onClick = onSearchClick, modifier = Modifier.size(42.dp).testTag("search_button")) {
+                Icon(Icons.Default.Search, contentDescription = "Search videos", tint = VibeTextPrimary, modifier = Modifier.size(23.dp))
             }
-
-            IconButton(onClick = onSearchClick, modifier = Modifier.testTag("search_button")) {
-                Icon(Icons.Default.Search, contentDescription = "Search videos", tint = VibeTextPrimary)
-            }
-            IconButton(onClick = onSettingsClick, modifier = Modifier.testTag("settings_button")) {
-                Icon(Icons.Default.Settings, contentDescription = "Settings", tint = VibeTextPrimary)
+            IconButton(onClick = onSettingsClick, modifier = Modifier.size(42.dp).testTag("settings_button")) {
+                Icon(Icons.Default.Settings, contentDescription = "Settings", tint = VibeTextPrimary, modifier = Modifier.size(23.dp))
             }
         }
     }
@@ -196,7 +173,7 @@ fun VideoCard(
         ) {
             Box(
                 modifier = Modifier
-                    .size(width = 150.dp, height = 94.dp)
+                    .size(width = 142.dp, height = 88.dp)
                     .clip(RoundedCornerShape(14.dp))
                     .background(Color(0xFFF1F3F8))
             ) {
@@ -235,11 +212,11 @@ fun VideoCard(
                     contentDescription = "Play",
                     tint = Color.White,
                     modifier = Modifier
-                        .size(34.dp)
+                        .size(46.dp)
                         .align(Alignment.Center)
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.primary.copy(alpha = .92f))
-                        .padding(7.dp)
+                        .padding(10.dp)
                 )
 
                 if (video.lastPositionMs > 0 && video.durationMs > 0) {

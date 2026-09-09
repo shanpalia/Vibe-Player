@@ -101,7 +101,10 @@ fun VibeApp(
                     BackHandler { currentScreen = VibeScreen.Home }
                     FolderVideosScreen(
                         folderName = screen.folderName,
-                        onBack = { currentScreen = VibeScreen.Home },
+                        onBack = {
+                            app.playerManager.stopPlayback()
+                            currentScreen = VibeScreen.Home
+                        },
                         onPlayVideo = { video, startPos ->
                             currentScreen = VibeScreen.Player(video, startPos)
                         }
@@ -109,11 +112,17 @@ fun VibeApp(
                 }
 
                 is VibeScreen.Player -> {
-                    BackHandler { currentScreen = VibeScreen.Home }
+                    BackHandler {
+                        app.playerManager.stopPlayback()
+                        currentScreen = VibeScreen.Home
+                    }
                     PlayerScreen(
                         video = screen.video,
                         startPositionMs = screen.startPositionMs,
-                        onBack = { currentScreen = VibeScreen.Home },
+                        onBack = {
+                            app.playerManager.stopPlayback()
+                            currentScreen = VibeScreen.Home
+                        },
                         onPlayNext = { nextVideo ->
                             currentScreen = VibeScreen.Player(nextVideo, 0L)
                         }

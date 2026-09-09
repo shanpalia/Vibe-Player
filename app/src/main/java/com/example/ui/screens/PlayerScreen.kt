@@ -115,7 +115,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -123,7 +122,6 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import com.example.VibeApplication
-import com.example.service.VibePlaybackService
 import com.example.data.model.TrackInfo
 import com.example.data.model.VideoAspectRatio
 import com.example.data.model.VideoItem
@@ -178,6 +176,7 @@ fun PlayerScreen(
     var showSpeedDialog by remember { mutableStateOf(false) }
     var showDelayDialog by remember { mutableStateOf(false) }
     var moreMenuExpanded by remember { mutableStateOf(false) }
+    var aspectMenuExpanded by remember { mutableStateOf(false) }
 
     // Gesture feedback states
     var brightnessFeedback by remember { mutableFloatStateOf(-1f) }
@@ -203,10 +202,6 @@ fun PlayerScreen(
             playerManager.loadExternalSubtitle(uri)
         }
     }
-
-    val notificationPermissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { }
 
     // Auto-hide controls timer
     LaunchedEffect(controlsVisible, isPlaying, isLocked) {
@@ -263,20 +258,17 @@ fun PlayerScreen(
         }
     }
 
-    // Start the MediaSessionService so playback survives leaving the Activity/home screen.
-    LaunchedEffect(video.uri) {
-        try {
-            val serviceIntent = Intent(context, VibePlaybackService::class.java)
-            ContextCompat.startForegroundService(context, serviceIntent)
-        } catch (_: Exception) {
-            // The MediaSessionService can still be used while the Activity is visible.
+    // MX Player-like behaviour: leaving the app/player stops playback.
+    // The player does not continue playing audio in the background and no media notification is shown.
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, video.uri) {
+        val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+            if (event == androidx.lifecycle.Lifecycle.Event.ON_STOP) {
+                playerManager.pause()
+            }
         }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
-            context.checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != android.content.pm.PackageManager.PERMISSION_GRANTED
-        ) {
-            notificationPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
-        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     // Initialize playback and check for matching subtitle file automatically
@@ -544,13 +536,29 @@ fun PlayerScreen(
                         modifier = Modifier.weight(1f)
                     )
 
-                    // Aspect ratio toggle
-                    IconButton(onClick = { playerManager.cycleAspectRatio() }) {
-                        Icon(
-                            imageVector = Icons.Default.AspectRatio,
-                            contentDescription = "Cycle Aspect Ratio (${aspectRatio.label})",
-                            tint = Color.White
-                        )
+                    // MX-style screen ratio menu
+                    Box {
+                        IconButton(onClick = { aspectMenuExpanded = true }) {
+                            Icon(
+                                imageVector = Icons.Default.AspectRatio,
+                                contentDescription = "Screen ratio: ${aspectRatio.label}",
+                                tint = Color.White
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = aspectMenuExpanded,
+                            onDismissRequest = { aspectMenuExpanded = false }
+                        ) {
+                            VideoAspectRatio.entries.forEach { option ->
+                                DropdownMenuItem(
+                                    text = { Text(option.label, fontWeight = if (option == aspectRatio) FontWeight.Bold else FontWeight.Normal) },
+                                    onClick = {
+                                        aspectMenuExpanded = false
+                                        playerManager.setAspectRatio(option)
+                                    }
+                                )
+                            }
+                        }
                     }
 
                     // Audio track selector

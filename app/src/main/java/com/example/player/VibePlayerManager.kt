@@ -222,6 +222,18 @@ class VibePlayerManager(
         player.play()
     }
 
+    fun stopPlayback() {
+        exoPlayer?.let {
+            it.pause()
+            it.stop()
+            it.clearMediaItems()
+        }
+        _isPlaying.value = false
+        _currentVideo.value = null
+        _currentPositionMs.value = 0L
+        _durationMs.value = 0L
+    }
+
     fun togglePlayPause() {
         exoPlayer?.let {
             if (it.isPlaying) it.pause() else it.play()
