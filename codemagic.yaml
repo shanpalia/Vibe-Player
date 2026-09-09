@@ -1,27 +1,30 @@
 workflows:
   vibe-player-android:
-    name: Vibe Player Android
-    max_build_duration: 60
+    name: Vibe Player Android Signed APK
+    max_build_duration: 120
+    instance_type: linux_x2
 
     environment:
-      groups:
-        - google_play
+      java: 17
       android_signing:
         - paliaapk-release
 
     scripts:
-      - name: Get Flutter packages
+      - name: Set Android SDK location
         script: |
-          flutter pub get
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > "$CM_BUILD_DIR/local.properties"
 
-      - name: Build signed APK
+      - name: Build signed release APK
         script: |
-          flutter build apk --release
+          gradle --no-daemon --stacktrace assembleRelease
 
     artifacts:
-      - build/app/outputs/flutter-apk/app-release.apk
+      - app/build/outputs/apk/release/*.apk
 
     publishing:
       email:
         recipients:
           - shanpalia786@gmail.com
+        notify:
+          success: true
+          failure: true
