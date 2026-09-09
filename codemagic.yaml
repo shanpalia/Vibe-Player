@@ -9,6 +9,10 @@ workflows:
         - paliaapk-release
 
     scripts:
+      - name: Prepare build environment
+        script: |
+          printf "%s\n" "# Vibe Player build - no secrets required" > .env.example
+
       - name: Verify Gradle wrapper
         script: |
           chmod +x ./gradlew
