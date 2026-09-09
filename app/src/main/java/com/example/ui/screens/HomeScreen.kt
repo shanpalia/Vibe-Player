@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,9 +33,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FileOpen
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -48,10 +51,11 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.ScrollableTabRow
@@ -427,7 +431,12 @@ fun HomeScreen(
             }
 
             // Main Tab Content
-            when (selectedTabIndex) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                when (selectedTabIndex) {
                 0 -> {
                     // All Videos Tab
                     if (sortedVideos.isEmpty()) {
@@ -439,7 +448,7 @@ fun HomeScreen(
                         )
                     } else {
                         LazyColumn(
-                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 96.dp),
+                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(14.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
@@ -469,7 +478,7 @@ fun HomeScreen(
                         )
                     } else {
                         LazyColumn(
-                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 96.dp),
+                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
@@ -494,7 +503,7 @@ fun HomeScreen(
                         )
                     } else {
                         LazyColumn(
-                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 96.dp),
+                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(14.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
@@ -524,7 +533,7 @@ fun HomeScreen(
                         )
                     } else {
                         LazyColumn(
-                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 96.dp),
+                            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(14.dp),
                             modifier = Modifier.fillMaxSize()
                         ) {
@@ -542,26 +551,47 @@ fun HomeScreen(
                         }
                     }
                 }
+                }
             }
-        }
 
-        // Floating Action Button: Open File
-        FloatingActionButton(
-            onClick = { openDocumentLauncher.launch(arrayOf("video/*")) },
-            containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = Color.White,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(24.dp)
-                .testTag("open_file_fab")
-        ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
+            // Bottom navigation: always stays inside the app content and above Android system navigation.
+            NavigationBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding(),
+                containerColor = Color.White,
+                tonalElevation = 2.dp
             ) {
-                Icon(Icons.Default.FileOpen, contentDescription = "Open video file")
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Open File", fontWeight = FontWeight.Bold)
+                NavigationBarItem(
+                    selected = true,
+                    onClick = { selectedTabIndex = 0 },
+                    icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
+                    label = { Text("Home") }
+                )
+                NavigationBarItem(
+                    selected = selectedTabIndex == 1,
+                    onClick = { selectedTabIndex = 1 },
+                    icon = { Icon(Icons.Default.Folder, contentDescription = "Folders") },
+                    label = { Text("Folders") }
+                )
+                NavigationBarItem(
+                    selected = selectedTabIndex == 2,
+                    onClick = { selectedTabIndex = 2 },
+                    icon = { Icon(Icons.Default.History, contentDescription = "Recent") },
+                    label = { Text("Recent") }
+                )
+                NavigationBarItem(
+                    selected = selectedTabIndex == 3,
+                    onClick = { selectedTabIndex = 3 },
+                    icon = { Icon(Icons.Default.Star, contentDescription = "Favorites") },
+                    label = { Text("Favorites") }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = onOpenSettings,
+                    icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
+                    label = { Text("Settings") }
+                )
             }
         }
 
@@ -660,12 +690,12 @@ private fun EmptyState(
                 }
 
                 if (!hasPermission) {
-                    Button(
-                        onClick = onRequestPermission,
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-                    ) {
-                        Text("Grant Permission", color = VibeTextPrimary)
-                    }
+                    Text(
+                        "Use Grant Permission above to scan your videos.",
+                        color = VibeTextTertiary,
+                        fontSize = 12.sp,
+                        textAlign = TextAlign.Center
+                    )
                 }
             }
         }

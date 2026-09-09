@@ -1,17 +1,9 @@
 # Vibe Player
 
-Vibe Player is an Android media player project developed by Shan Palia.
+Vibe Player — Android video player with a clean white/purple interface.
 
-## This build
-- Refreshed compact video-library UI
-- White/light home interface with cleaner cards
-- Automatic landscape mode for landscape videos (resolution-aware; unknown video sizes default to landscape)
-- Android status/navigation bars remain visible in the player
-- MediaSessionService starts when playback begins so playback can continue after Back/Home
-- Android media notification with play/pause controls and a tap-to-return action
-- Notification permission requested on Android 13+
-- Playback metadata is exposed to the system media notification
-- Gradle 9.3.1 / Codemagic signed release setup
-
-## Build
-Use Android Studio or Codemagic. The release workflow uses the `paliaapk-release` signing identity configured in Codemagic.
+- Bottom navigation includes Home, Folders, Recent, Favorites and Settings.
+- App content respects Android system status/navigation bars so controls do not sit underneath phone system UI.
+- Launcher and in-app branding use the Vibe Player icon.
+- Splash screen includes “Developer by ShanPalia”.
+- Release build is configured for Codemagic with the `paliaapk-release` signing reference.
