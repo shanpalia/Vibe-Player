@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,7 +34,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        window.statusBarColor = android.graphics.Color.WHITE
+        window.navigationBarColor = android.graphics.Color.WHITE
+        androidx.core.view.WindowCompat.setDecorFitsSystemWindows(window, true)
+        val bars = androidx.core.view.WindowInsetsControllerCompat(window, window.decorView)
+        bars.show(androidx.core.view.WindowInsetsCompat.Type.systemBars())
+        bars.isAppearanceLightStatusBars = true
+        bars.isAppearanceLightNavigationBars = true
 
         openedVideoUri = extractVideoUri(intent)
 
@@ -103,21 +108,33 @@ private fun VibeSplashScreen() {
         Image(
             painter = painterResource(id = R.drawable.vibe_launcher_icon),
             contentDescription = "Vibe Player",
-            modifier = Modifier.size(230.dp),
+            modifier = Modifier.size(190.dp),
             contentScale = ContentScale.Fit
         )
+        androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(14.dp))
         Text(
-            text = "VIBE PLAYER",
+            text = "Vibe Player",
             color = Color(0xFF17203A),
-            fontSize = 23.sp,
-            fontWeight = androidx.compose.ui.text.font.FontWeight.Black,
-            letterSpacing = 2.2.sp
+            fontSize = 28.sp,
+            fontWeight = androidx.compose.ui.text.font.FontWeight.Black
         )
         Text(
-            text = "PLAY YOUR VIBE",
-            color = Color(0xFF7A8192),
-            fontSize = 12.sp,
-            letterSpacing = 2.8.sp
+            text = "Play Everything. Feel the Vibe.",
+            color = Color(0xFF657085),
+            fontSize = 13.sp
+        )
+        androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(30.dp))
+        androidx.compose.foundation.layout.Box(
+            modifier = Modifier
+                .size(width = 150.dp, height = 4.dp)
+                .background(Color(0xFFE4E7EF))
+        )
+        androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(24.dp))
+        Text(
+            text = "Developer by ShanPalia",
+            color = Color(0xFF4B5563),
+            fontSize = 14.sp,
+            fontWeight = androidx.compose.ui.text.font.FontWeight.Medium
         )
     }
 }
