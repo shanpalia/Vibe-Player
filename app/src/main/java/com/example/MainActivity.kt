@@ -101,7 +101,9 @@ private fun VibeSplashScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color.White)
+            .androidx.compose.foundation.layout.statusBarsPadding()
+            .androidx.compose.foundation.layout.navigationBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {

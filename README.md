@@ -7,3 +7,7 @@ Vibe Player — Android video player with a clean white/purple interface.
 - Launcher and in-app branding use the Vibe Player icon.
 - Splash screen includes “Developer by ShanPalia”.
 - Release build is configured for Codemagic with the `paliaapk-release` signing reference.
+
+
+## Phone safe-area fix
+Normal screens use top status-bar insets so the header never overlaps Android system icons. Player remains separately managed for landscape playback.
