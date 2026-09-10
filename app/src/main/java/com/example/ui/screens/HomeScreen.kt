@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.weight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -168,6 +169,8 @@ fun HomeScreen(
         }
         if (hasMediaPermission) {
             mediaRepository.scanDeviceVideos()
+        } else {
+            permissionLauncher.launch(permissionToRequest)
         }
     }
 
@@ -389,7 +392,12 @@ fun HomeScreen(
                 }
             }
 
-            when (selectedTabIndex) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                when (selectedTabIndex) {
                 0 -> {
                     if (sortedVideos.isEmpty()) {
                         EmptyState(
@@ -503,7 +511,7 @@ fun HomeScreen(
                         }
                     }
                 }
-                }
+            }
             }
 
             // Bottom navigation: always stays inside the app content and above Android system navigation.
@@ -515,7 +523,7 @@ fun HomeScreen(
                 tonalElevation = 2.dp
             ) {
                 NavigationBarItem(
-                    selected = true,
+                    selected = selectedTabIndex == 0,
                     onClick = { selectedTabIndex = 0 },
                     icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
                     label = { Text("Home") }
@@ -583,6 +591,7 @@ fun HomeScreen(
             )
         }
     }
+}
 
 @Composable
 private fun EmptyState(
@@ -594,16 +603,17 @@ private fun EmptyState(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp),
+            .padding(horizontal = 24.dp, vertical = 24.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxWidth()
         ) {
             Box(
                 modifier = Modifier
-                    .size(80.dp)
+                    .size(82.dp)
                     .clip(CircleShape)
                     .background(MaterialTheme.colorScheme.surfaceVariant),
                 contentAlignment = Alignment.Center
@@ -612,7 +622,7 @@ private fun EmptyState(
                     imageVector = Icons.Outlined.VideoFile,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(40.dp)
+                    modifier = Modifier.size(42.dp)
                 )
             }
 
@@ -622,32 +632,41 @@ private fun EmptyState(
                 text = message,
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontWeight = FontWeight.Medium,
-                    fontSize = 15.sp
+                    fontSize = 16.sp
                 ),
                 color = VibeTextSecondary,
-                textAlign = TextAlign.Center
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
-            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                Button(
-                    onClick = onOpenFile,
-                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                ) {
-                    Icon(Icons.Default.FileOpen, contentDescription = null, modifier = Modifier.size(18.dp))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Browse Storage")
-                }
+            Button(
+                onClick = if (hasPermission) onOpenFile else onRequestPermission,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                shape = RoundedCornerShape(28.dp),
+                contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp)
+            ) {
+                Icon(
+                    imageVector = if (hasPermission) Icons.Default.FileOpen else Icons.Default.LockOpen,
+                    contentDescription = null,
+                    modifier = Modifier.size(19.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(if (hasPermission) "Browse Storage" else "Grant Video Access")
+            }
 
-                if (!hasPermission) {
-                    Text(
-                        "Use Grant Permission above to scan your videos.",
-                        color = VibeTextTertiary,
-                        fontSize = 12.sp,
-                        textAlign = TextAlign.Center
-                    )
-                }
+            if (!hasPermission) {
+                Spacer(modifier = Modifier.height(10.dp))
+                Text(
+                    text = "Allow access so Vibe Player can scan your videos.",
+                    color = VibeTextTertiary,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         }
     }

@@ -37,33 +37,6 @@ import com.example.ui.VibeApp
 class MainActivity : ComponentActivity() {
     private var openedVideoUri by mutableStateOf<Uri?>(null)
 
-    private val mediaPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        // HomeScreen will rescan automatically when it sees the granted permission.
-    }
-
-    private fun hasVideoPermission(): Boolean {
-        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Manifest.permission.READ_MEDIA_VIDEO
-        } else {
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        }
-        return androidx.core.content.ContextCompat.checkSelfPermission(this, permission) ==
-            PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun requestVideoPermissionIfNeeded() {
-        if (!hasVideoPermission()) {
-            val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                Manifest.permission.READ_MEDIA_VIDEO
-            } else {
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            }
-            mediaPermissionLauncher.launch(permission)
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.statusBarColor = android.graphics.Color.WHITE
@@ -82,7 +55,6 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 delay(1200)
                 showSplash = false
-                requestVideoPermissionIfNeeded()
             }
 
             if (showSplash) {
