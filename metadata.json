@@ -1,0 +1,7 @@
+{
+  "name": "Vibe Player",
+  "description": "Production-ready Android video player app by Shan Palia. Play Everything. Feel the Vibe.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
