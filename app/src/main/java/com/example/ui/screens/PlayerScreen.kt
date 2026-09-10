@@ -264,7 +264,8 @@ fun PlayerScreen(
     DisposableEffect(lifecycleOwner, video.uri) {
         val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
             if (event == androidx.lifecycle.Lifecycle.Event.ON_STOP) {
-                playerManager.pause()
+                // MX Player-like behavior: leaving the app/player stops playback completely.
+                playerManager.stopPlayback()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -541,7 +542,7 @@ fun PlayerScreen(
                         IconButton(onClick = { aspectMenuExpanded = true }) {
                             Icon(
                                 imageVector = Icons.Default.AspectRatio,
-                                contentDescription = "Screen ratio: ${aspectRatio.label}",
+                                contentDescription = "Screen & Zoom",
                                 tint = Color.White
                             )
                         }
@@ -549,15 +550,70 @@ fun PlayerScreen(
                             expanded = aspectMenuExpanded,
                             onDismissRequest = { aspectMenuExpanded = false }
                         ) {
-                            VideoAspectRatio.entries.forEach { option ->
-                                DropdownMenuItem(
-                                    text = { Text(option.label, fontWeight = if (option == aspectRatio) FontWeight.Bold else FontWeight.Normal) },
-                                    onClick = {
-                                        aspectMenuExpanded = false
-                                        playerManager.setAspectRatio(option)
-                                    }
-                                )
-                            }
+                            DropdownMenuItem(
+                                text = { Text("Fit (Keep Aspect)") },
+                                onClick = {
+                                    aspectMenuExpanded = false
+                                    zoomScale = 1f
+                                    playerManager.setAspectRatio(VideoAspectRatio.FIT)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("1.0 (Normal)", fontWeight = FontWeight.Bold) },
+                                onClick = {
+                                    aspectMenuExpanded = false
+                                    zoomScale = 1f
+                                    playerManager.setAspectRatio(VideoAspectRatio.FIT)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Stretch (Fill Screen)") },
+                                onClick = {
+                                    aspectMenuExpanded = false
+                                    zoomScale = 1f
+                                    playerManager.setAspectRatio(VideoAspectRatio.FILL)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Zoom 1.5x") },
+                                onClick = {
+                                    aspectMenuExpanded = false
+                                    zoomScale = 1.5f
+                                    playerManager.setAspectRatio(VideoAspectRatio.FIT)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Zoom 2.0x") },
+                                onClick = {
+                                    aspectMenuExpanded = false
+                                    zoomScale = 2.0f
+                                    playerManager.setAspectRatio(VideoAspectRatio.FIT)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("16:9") },
+                                onClick = {
+                                    aspectMenuExpanded = false
+                                    zoomScale = 1f
+                                    playerManager.setAspectRatio(VideoAspectRatio.SIXTEEN_NINE)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("4:3") },
+                                onClick = {
+                                    aspectMenuExpanded = false
+                                    zoomScale = 1f
+                                    playerManager.setAspectRatio(VideoAspectRatio.FOUR_THREE)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Original") },
+                                onClick = {
+                                    aspectMenuExpanded = false
+                                    zoomScale = 1f
+                                    playerManager.setAspectRatio(VideoAspectRatio.ORIGINAL)
+                                }
+                            )
                         }
                     }
 

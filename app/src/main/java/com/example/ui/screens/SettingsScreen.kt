@@ -320,7 +320,7 @@ fun SettingsScreen(
                                 contentAlignment = Alignment.Center
                             ) {
                                 AsyncImage(
-                                    model = R.drawable.vibe_player_logo,
+                                    model = R.drawable.vibe_launcher_icon,
                                     contentDescription = "Vibe Player Logo",
                                     modifier = Modifier
                                         .fillMaxSize()
