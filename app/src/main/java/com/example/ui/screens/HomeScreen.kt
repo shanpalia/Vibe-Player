@@ -166,7 +166,9 @@ fun HomeScreen(
         } else {
             context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == android.content.pm.PackageManager.PERMISSION_GRANTED
         }
-        mediaRepository.scanDeviceVideos()
+        if (hasMediaPermission) {
+            mediaRepository.scanDeviceVideos()
+        }
     }
 
     // Filter videos by query and short clip filter
@@ -387,67 +389,7 @@ fun HomeScreen(
                 }
             }
 
-            // Permission Request Banner if not granted
-            if (!hasMediaPermission) {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.LockOpen,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.size(32.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = "Storage Permission Needed",
-                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                                color = VibeTextPrimary
-                            )
-                            Text(
-                                text = "Grant permission to scan and play all video formats on your device.",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = VibeTextSecondary
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Button(
-                                onClick = { permissionLauncher.launch(permissionToRequest) },
-                                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                            ) {
-                                Text("Grant Permission")
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Main Tab Content
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                when (selectedTabIndex) {
-                0 -> {
-                    // All Videos Tab
-                    if (sortedVideos.isEmpty()) {
-                        EmptyState(
-                            message = if (searchQuery.isNotBlank()) "No videos match \"$searchQuery\"" else "No videos found on device",
-                            onOpenFile = { openDocumentLauncher.launch(arrayOf("video/*")) },
-                            onRequestPermission = { permissionLauncher.launch(permissionToRequest) },
-                            hasPermission = hasMediaPermission
-                        )
-                    } else {
-                        LazyColumn(
+            LazyColumn(
                             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(14.dp),
                             modifier = Modifier.fillMaxSize()

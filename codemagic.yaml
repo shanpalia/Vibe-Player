@@ -18,9 +18,17 @@ workflows:
           chmod +x ./gradlew
           ./gradlew --version
 
+      - name: Remove obsolete background playback service
+        script: |
+          rm -rf app/src/main/java/com/example/service
+          if grep -RInE "androidx\.media3\.session|MediaSession" app/src 2>/dev/null; then
+            echo "Obsolete media session references detected"
+            exit 1
+          fi
+
       - name: Build signed release APK
         script: |
-          ./gradlew --no-daemon --stacktrace assembleRelease
+          ./gradlew --no-daemon --stacktrace clean assembleRelease
 
     artifacts:
       - app/build/outputs/apk/release/*.apk

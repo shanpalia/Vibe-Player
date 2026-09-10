@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -81,7 +82,13 @@ fun VibeApp(
         themeMode = settings.themeMode,
         accentIndex = settings.accentColorIndex
     ) {
-        Surface(modifier = modifier.fillMaxSize()) {
+        Surface(
+            modifier = if (currentScreen is VibeScreen.Player) {
+                modifier.fillMaxSize()
+            } else {
+                modifier.fillMaxSize().statusBarsPadding()
+            }
+        ) {
             when (val screen = currentScreen) {
                 is VibeScreen.Home -> {
                     HomeScreen(
