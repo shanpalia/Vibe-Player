@@ -583,7 +583,6 @@ fun HomeScreen(
             )
         }
     }
-}
 
 @Composable
 private fun EmptyState(
